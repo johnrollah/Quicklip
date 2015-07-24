@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>QuicKlip2</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="favicon" href="icon.png" >
+    <!-- custom css -->
+    <style>
+    html{
+      -webkit-app-region: drag;
+    }
+    body{
+      background-color: rgba(5, 5, 5, .2);
+    }
+    .clip-group {
+      box-sizing: border-box;
+      display: table;
+      width: 100%;
+    }
+    .clip-group span{
+      cursor: pointer;
+      color: #454545;
+      float: left;
+      text-align: center;
+      font-size: x-large;
+      box-sizing: border-box;
+      width: 10%;
+      -webkit-app-region: no-drag;
+    }
+    .clip-group span:hover{
+      color: #AAA9A9;
+    }
+    .clip-group .clip {
+      box-sizing: border-box;
+      background-color: rgba(92, 92, 92, 0.6);
+      color: white;
+      width: 89%;
+      resize: vertical;
+      height: 27px;
+      word-break: break-all;
+      overflow: hidden;
+      -webkit-app-region: no-drag;
+    }
+    ::selection {
+      background: black; /* WebKit/Blink Browsers */
+    }
+    </style>
+  </head>
+  <body>
+    <div style="height:10px; display:block;background-color:rgba(5,5,5,0.2);font-size:xx-small;text-align:center; margin-bottom:3px">click drag</div>
+    <div id="clip-area">
+      <!-- elements are added automatically -->
+    </div>
+  </body>
+  <script src="./lib/jquery.js"></script>
+  <script src="app.js"></script>
+</html>

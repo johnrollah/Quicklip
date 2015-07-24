@@ -1,0 +1,13 @@
+{
+  "name"    : "QuicKlip 2",
+  "version" : "0.0.1",
+  "main"    : "index.html",
+  "window"  : {
+    "title" : "QuicKlip2",
+    "frame" : false,
+    "toolbar" : false,
+    "min_width": 100,
+    "min_height": 50,
+    "as_desktop": true
+  }
+}
