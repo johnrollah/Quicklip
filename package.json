@@ -4,8 +4,10 @@
   "main"    : "index.html",
   "window"  : {
     "title" : "QuicKlip2",
+    "icon"  : "icon.png",
     "frame" : false,
     "toolbar" : false,
+    "show_in_taskbar" : false,
     "min_width": 100,
     "min_height": 50,
     "as_desktop": true
