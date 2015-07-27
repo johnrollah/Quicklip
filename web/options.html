@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>QuicKlip2 - Preferences</title>
-    <link rel="stylesheet" href="./web/css/bootstrap.css">
+    <link rel="stylesheet" href="./bootstrap.css">
     <style media="screen">
       body{
         background-color: black;
@@ -17,16 +17,31 @@
       button {
         -webkit-app-region: no-drag;
       }
+      .clip {
+        box-sizing: border-box;
+        background-color: rgba(92, 92, 92, 0.6);
+        color: white;
+        width: 89%;
+        resize: vertical;
+        height: 27px;
+        word-break: break-all;
+        overflow: hidden;
+        -webkit-app-region: no-drag;
+      }
     </style>
   </head>
   <body>
     <div class="container">
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-12">
           <br>
           <div class="jumbotron text-center">
             <h1 style="color: black">Preferences</h1>
           </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-6">
           <form class="form-horizontal" action="#">
             <div class="form-group">
               <label for="clipcount" class="col-sm-4">Number of clips to save:</label>
@@ -54,13 +69,32 @@
             </div>
           </form>
         </div>
+        <div class="col-xs-6">
+          <label for="example">Text Box Preview:</label>
+          <textarea name="example" class="clip">Bacon ipsum dolor amet doner andouille alcatra venison meatloaf. Jowl ball tip chicken pork belly spare ribs beef ham. Ball tip rump swine leberkas, pork belly doner pork chop bresaola shanke.</textarea>
+        </div>
       </div>
     </div>
-    <script src="./web/jquery.js"></script>
+    <script src="./jquery.js"></script>
     <script type="text/javascript">
-      $(window).on('message',function(event){
-        console.log(event.data);
+      applyPreferences();
+      $('.clip').focusin(function(){
+        if(this.clientHeight < this.scrollHeight){
+          this.style.height = this.scrollHeight + 'px';
+          if(this.clientHeight < this.scrollHeight){
+            this.style.height = (this.scrollHeight * 2) - this.clientHeight + 'px';
+          }
+        }
+      }).focusout(function(){
+        this.style.height = global.preferences.textarea.height+'px';
       });
+
+      $('#textarea-fontsize').on('keyup',function(e){
+        $('.clip').css('font-size',this.value + 'px');
+      });
+      $('#textarea-height').on('keyup',function(e){
+        $('.clip').css('height',this.value + 'px');
+      })
       $('form').on('submit',function(e){
         e.preventDefault();
         e.stopPropagation();
@@ -94,6 +128,15 @@
       $('#clipcount').val(global.preferences.max_clips);
       $('#textarea-fontsize').val(global.preferences.textarea.fontsize);
       $('#textarea-height').val(global.preferences.textarea.height);
+
+      function applyPreferences(){
+        $('.clip').each(function(){
+          $(this).css({
+            'height': global.preferences.textarea.height,
+            'font-size': global.preferences.textarea.fontsize + 'px'
+          });
+        });
+      }
     </script>
   </body>
 </html>
