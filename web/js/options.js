@@ -1,5 +1,7 @@
 var utilities = global.dynSearch.utils;
 var util = null; // to be used later when modifying utils
+var prevUrl = prevRegex= '';
+resetForm();
 // disable default form submits
 $('form').keypress(function(e){
   if(e.keyCode == 13) e.preventDefault();
@@ -24,14 +26,7 @@ $('#searchItems').change(function(e){
   }else{
     util = utilities[this.selectedOptions[0].value];
     $('#expression').val(util.regex).prop('disabled', false);
-    for(var i in util.utilities){
-      var temp = util.utilities[i];
-      $('#itemUtilities')
-        .append('<option value="'+i+'">'+temp.name+'</option>');
-    }
-    $('#itemUtilities').prop('disabled',false);
-    $('#deleteItem').prop('disabled',false);
-    $('#newUtil').attr('disabled',false);
+    enableForm(util.regex,util.utilities);
   }
 });
 
@@ -39,12 +34,12 @@ $('#itemUtilities').change(function(e){
   e.preventDefault();
   var index = $('#searchItems :selected').val();
   var url = global.dynSearch.utils[index].utilities[this.value].url;
-  $('#utilityURL').val(url);
-  $('#saveUrl').attr('disabled',true);
+  selectUtility(url);
 });
 
 $('#newUtil').click(function(e){
   e.preventDefault();
+  if($(this).attr('disabled'))return;
   bootbox.prompt({
     title: 'New Utility Name',
     message: 'Name your new utility',
@@ -74,9 +69,22 @@ $('#newUtil').click(function(e){
 });
 
 $('#utilityURL').change(function(e){
-  $('#saveUrl').attr('disabled',false);
-})
+  console.log(prevUrl,this.value);
+  prevUrl = this.value;
+  if(this.value.match('{query}')){
+    $('#saveUrl').attr('disabled',false);
+    $(this).removeClass('error').addClass('success');
+  }else{
+    $('#saveUrl').attr('disabled',true);
+    $(this).removeClass('success').addClass('error');
+  }
+
+
+});
+
+
 $('#deleteItem').click(function(e){
+  if($(this).attr('disabled'))return;
   var index = $('#searchItems :selected').val();
   var utilName = utilities[index].name;
   e.preventDefault();
@@ -89,6 +97,7 @@ $('#deleteItem').click(function(e){
         global.dynSearch.delete(utilName);
         global.dynSearch.save();
         reloadUtils();
+        resetForm();
       }
     }
   })
@@ -96,6 +105,7 @@ $('#deleteItem').click(function(e){
 
 $('#createNew').click(function(e){
   e.preventDefault();
+  if($(this).attr('disabled'))return;
   bootbox.prompt({
     title: 'New Search Item',
     message: "Name your new search item",
@@ -120,6 +130,12 @@ $('#createNew').click(function(e){
       global.dynSearch.createNew(result);
       global.dynSearch.save();
       reloadUtils(true);
+      var len = global.dynSearch.utils.length;
+      enableForm(
+        global.dynSearch.utils[len - 1].regex,
+        global.dynSearch.utils[len - 1].utilities
+      );
+      len = null;
     }
   });
 })
@@ -199,4 +215,61 @@ function reloadUtils(focusLast) {
         .append('<option value="'+i+'">'+temp.name+'</option>');
     }
   }
+}
+
+function selectUtility(url){
+  if(!$('#saveUrl').attr('disabled')){
+    bootbox.confirm({
+      title: 'Cancel Changes to URL?',
+      message: 'Are you sure you would like to cancel your changes to the utility url?',
+      className: 'dark',
+      callback: function(result){
+        if(!result)return;
+        $('#utilityURL').val(url);
+        $('#utilityURL').prop('disabled',false);
+        $('#saveUrl').attr('disabled',true);
+      }
+    });
+  }else{
+    $('#utilityURL').val(url);
+    $('#utilityURL').prop('disabled',false);
+    $('#saveUrl').attr('disabled',true);
+  }
+}
+
+function resetForm(){
+  prevRegex = '';
+  $('#regex').val('');
+  $('#itemUtilities').html('<option value="">Select Utility</option>');
+  $('#utilityURL').val('');
+
+  // text fields and selects
+  $('#deleteItem').prop('disabled',true);
+  $('#itemUtilities').prop('disabled',true);
+
+  // buttons
+  $('#saveRegex').attr('disabled',true);
+  $('#delUtil').attr('disabled',true);
+  $('#newUtil').attr('disabled',true);
+  $('#saveUrl').attr('disabled',true);
+
+}
+
+function enableForm(regex,utilities){
+  prevRegex = regex;
+  for(var i in utilities){
+    var temp = utilities[i];
+    $('#itemUtilities')
+      .append('<option value="'+i+'">'+temp.name+'</option>');
+  }
+  temp = null;
+  $('#regex').val(regex);
+
+  // text fields and selects
+  $('#deleteItem').prop('disabled',false);
+  $('#itemUtilities').prop('disabled',false);
+
+  // buttons
+  $('#saveRegex').attr('disabled',false);
+  $('#newUtil').attr('disabled',false);
 }
