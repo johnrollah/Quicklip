@@ -8,8 +8,13 @@
       body{
         background-color: black;
         color: white;
-        -webkit-app-region: drag;
         height:100%;
+      }
+      .dragger {
+        background-color: black;
+        height: 40px;
+        display: block;
+        -webkit-app-region: drag;
       }
       input{
         -webkit-app-region: no-drag;
@@ -28,56 +33,165 @@
         overflow: hidden;
         -webkit-app-region: no-drag;
       }
+      a{
+        color: white;
+      }
+      .dark .modal-content div{
+        background-color: black;
+      }
     </style>
   </head>
   <body>
     <div class="container">
       <div class="row">
         <div class="col-md-12">
-          <br>
-          <div class="jumbotron text-center">
-            <h1 style="color: black">Preferences</h1>
+          <div class="dragger"></div>
+        </div>
+      </div>
+      <div class="row" id="tabs">
+        <ul class="nav nav-tabs" role="tablist">
+          <li role="presentation" class="active"><a href="#clips" aria-controls="clips" role="tab" data-toggle="tab">Clips</a></li>
+          <li role="presentation"><a href="#utilities" aria-controls="utilities" role="tab" data-toggle="tab">Utilities</a></li>
+          <li role="presentation"><a href="#style" aria-controls="style" role="tab" data-toggle="tab">Style</a></li>
+        </ul>
+
+        <br>
+        <div class="tab-content">
+          <div class="tab-pane active" id="clips">
+            <div class="col-xs-6">
+              <form class="form-horizontal" action="#">
+                <div class="form-group">
+                  <label for="clipcount" class="col-sm-4">Number of clips to save:</label>
+                  <div class="col-sm-8">
+                    <input class="form-control" type="number" name="clipcount" id="clipcount">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4" for="textarea-fontsize">Textarea Font Size (px):</label>
+                  <div class="col-sm-8">
+                    <input class="form-control" type="number" name="textarea-fontsize" id="textarea-fontsize">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-4" for="textarea-height">Textarea Height (px):</label>
+                  <div class="col-sm-8">
+                    <input class="form-control" type="number" name="textarea-height" id="textarea-height">
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="col-xs-6">
+              <label for="example">Text Box Preview:</label>
+              <textarea name="example" class="clip">Bacon ipsum dolor amet doner andouille alcatra venison meatloaf. Jowl ball tip chicken pork belly spare ribs beef ham. Ball tip rump swine leberkas, pork belly doner pork chop bresaola shanke.</textarea>
+            </div>
+          </div>
+
+
+          <div class="tab-pane" id="utilities">
+            <div class="col-xs-4">
+              <input type="checkbox" name="autoscan" id="autoscan">Automatically scan new copies?
+              <hr>
+              <label for="searchItems">String Searches</label>
+              <select class="form-control" name="searchItems" id="searchItems" size="9">
+                <!-- items added on load -->
+              </select>
+              <br>
+              <input class="btn btn-warning" type="button" name="createNew" id="createNew" value="Create New">
+            </div>
+            <div class="col-xs-8">
+              <form class="form-horizontal">
+                <div class="form-group">
+                  <label for="expression">Regular Expression</label>
+                  <input class="form-control" disabled type="text" name="expression" id="expression">
+                </div>
+                <div class="form-group">
+                  <label for="itemUtilities">Utilities</label>
+                  <select class="form-control" disabled name="itemUtilities" id="itemUtilities">
+                    <option value="">Select Utility</option>
+                    <!-- items added when item is selected -->
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="utilityURL">Utility url</label>
+                  <input class="form-control" disabled type="text" name="utilityURL" id="utilityURL">
+                </div>
+              </form>
+            </div>
+
+          </div>
+          <div class="tab-pane" id="style">
+            <h1>Coming Soon...</h1>
           </div>
         </div>
       </div>
       <div class="row">
-        <div class="col-xs-6">
-          <form class="form-horizontal" action="#">
-            <div class="form-group">
-              <label for="clipcount" class="col-sm-4">Number of clips to save:</label>
-              <div class="col-sm-8">
-                <input class="form-control" type="number" name="clipcount" id="clipcount">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-4" for="textarea-fontsize">Textarea Font Size (px):</label>
-              <div class="col-sm-8">
-                <input class="form-control" type="number" name="textarea-fontsize" id="textarea-fontsize">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-4" for="textarea-height">Textarea Height (px):</label>
-              <div class="col-sm-8">
-                <input class="form-control" type="number" name="textarea-height" id="textarea-height">
-              </div>
-            </div>
-            <div class="form-group">
-              <div class="col-sm-offset-4 col-sm-8">
-                <button class="btn btn-primary" id="save" type="button" name="button">Save</button>
-                <button class="btn btn-danger" id="cancel" type="button" name="button">Cancel</button>
-              </div>
-            </div>
-          </form>
-        </div>
-        <div class="col-xs-6">
-          <label for="example">Text Box Preview:</label>
-          <textarea name="example" class="clip">Bacon ipsum dolor amet doner andouille alcatra venison meatloaf. Jowl ball tip chicken pork belly spare ribs beef ham. Ball tip rump swine leberkas, pork belly doner pork chop bresaola shanke.</textarea>
+        <div class="col-sm-12 text-center">
+          <hr>
+          <button class="btn btn-primary" id="save" type="button" name="button">Save</button>
+          <button class="btn btn-danger" id="cancel" type="button" name="button">Cancel</button>
         </div>
       </div>
     </div>
     <script src="./jquery.js"></script>
+    <script src="./bootstrap.js"></script>
+    <script src="./bootbox.min.js"></script>
     <script type="text/javascript">
-      applyPreferences();
+      var utilities = global.tempUtils;
+      var util = null; // to be used later when modifying utils
+      global.tempUtils = null;
+      // disable default form submits
+      $('form').keypress(function(e){
+        if(e.keyCode == 13) e.preventDefault();
+      });
+      // enable tabs
+      $('.nav-tabs a').click(function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+      });
+
+      // utility tab code
+      // set checkbox value for autoscan
+      $('#autoscan').prop('checked', global.preferences.dynamicsearch.autoscan);
+
+      for(var i in utilities){
+        var temp = utilities[i];
+        $('#searchItems')
+          .append('<option value="'+i+'">'+temp.name+'</option>');
+      }
+
+      $('#searchItems').change(function(e){
+        if(this.selectedOptions.length < 1){
+          $('#expression').val('');
+          $('#itemUtilities').html('<option value="">Select Utility</option>');
+          $('#utilityURL').val('');
+        }else{
+          util = utilities[this.selectedOptions[0].value];
+          $('#expression').val(util.regex).prop('disabled', false);
+          for(var i in util.utilities){
+            var temp = util.utilities[i];
+            $('#itemUtilities')
+              .append('<option value="'+i+'">'+temp.name+'</option>');
+          }
+          $('#itemUtilities').prop('disabled',false);
+        }
+      });
+
+      $('#createNew').click(function(e){
+        e.preventDefault();
+        bootbox.prompt({
+          title: 'New Search Item',
+          message: "Name your new search item",
+          className: 'dark',
+          callback: function(result){
+            if(!result) return; // dialog dismissed
+            console.log(result);
+          }
+        });
+      })
+
+      // clips tab code
+      applyPreferences(); // apply current prefs to textarea preview
+      // apply on focus methods for textarea preview
       $('.clip').focusin(function(){
         if(this.clientHeight < this.scrollHeight){
           this.style.height = this.scrollHeight + 'px';
@@ -95,30 +209,29 @@
       $('#textarea-height').on('keyup',function(e){
         $('.clip').css('height',this.value + 'px');
       })
-      $('form').on('submit',function(e){
-        e.preventDefault();
-        e.stopPropagation();
-      }).on('keypress',function(e){
-        if(e.keyCode == 13){
-          $('#save').click();
-        }
-      });
+
+
+      // cancel prefs window
       $('#cancel').click(function(e){
         e.preventDefault();
         e.stopPropagation();
         window.close();
       });
+      // save changed preferences
       $('#save').click(function(e){
         e.preventDefault();
         e.stopPropagation();
         var preferences = {};
         preferences.window = global.preferences.window;
+        preferences.dynamicsearch = global.preferences.dynamicsearch;
+        preferences.dynamicsearch.autoscan = $('#autoscan').prop('checked');
         preferences.max_clips = $('#clipcount').val();
         preferences.textarea = {
           height: $('#textarea-height').val(),
           fontsize: $('#textarea-fontsize').val()
         };
 
+        // write preferences to file
         require('fs').writeFile(global.root+'/preferences.json', JSON.stringify(preferences), function(err){
           if(err)console.error(err);
           window.opener.postMessage({ type:'prefs', value:preferences },'*');

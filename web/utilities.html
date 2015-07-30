@@ -2,40 +2,116 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>QuicKlip2 - Matched Items</title>
-    <link rel="stylesheet" href="./bootstrap.css" media="screen" title="bootstrap" charset="utf-8">
+    <title>QuicKlip2 - DynSearch</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <style media="screen">
       body {
-        background-color: black;
-        color: white;
         -webkit-app-region: drag;
       }
-      select {
+      #matches {
+        -webkit-app-region: no-drag;
+        height: 220px;
+      }
+      #utilities {
+        -webkit-app-region: no-drag;
+        height: 220px;
+      }
+      #run {
         -webkit-app-region: no-drag;
       }
-      button {
+      #cancel {
         -webkit-app-region: no-drag;
       }
     </style>
   </head>
   <body>
-    <div class="container">
+    <div class="container-fluid">
+      <br>
       <div class="row">
         <div class="col-xs-6">
-          <!-- present matched strings in multiselect -->
-          <label for="matched">Matched Items:</label>
-          <select class="form-control" name="matched" id="matched">
-            
+          <label for="matches">Matched Items</label>
+          <select class="form-control" id="matches" name="matches" multiple>
+            <!-- options are added after strings are scanned -->
           </select>
         </div>
         <div class="col-xs-6">
-          <!-- present tools associated with selected strings -->
-          <label for="tools">Utilities:</label>
-          <select class="form-control" name="tools">
-
+          <label for="utilities">Selected Items Utilities</label>
+          <select class="form-control" id="utilities" name="utilities" multiple>
+            <!-- utilities are added dynamically per selected match -->
           </select>
         </div>
       </div>
+      <div class="row">
+        <br>
+        <div class="col-md-offset-2 col-md-10 text-center">
+          <button type="button" id="run" class="btn btn-primary">Launch</button>
+          <button type="button" id="cancel" class="btn btn-danger">Cancel</button>
+        </div>
+      </div>
     </div>
+    <script src="./jquery.js"></script>
+    <script type="text/javascript">
+      var utilities = global.utilities;
+      var selected = [];
+      global.debug = global.utilities;
+      global.utilities = null;
+
+      // build the tools options upon load of the page
+      $(function(){
+        for(var i in utilities){
+          var util = utilities[i];
+          for(var x in util.match){
+            var match = util.match[x];
+            $('#matches')
+              .append('<option value="'+i+'">'+match+'</option>');
+          }
+        }
+        $('#matches').change(function(e){
+          global.debug = this.selectedOptions;
+          e.stopPropagation();
+          $('#utilities').html('');
+          selected = [];
+          for(var i in this.selectedOptions){
+            if(isNaN(i)) continue;
+            var temp = this.selectedOptions[i];
+
+            var utils = utilities[temp.value].utilities;
+            for(var x in utils){
+              var util = utils[x];
+              if(selected.indexOf(util.name) === -1){
+                selected.push(util.name);
+                $('#utilities')
+                  .append('<option value="'+temp.value+'">'+util.name+'</option>');
+              }
+            }
+          }
+        });
+      });
+
+      $('#run').click(function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        $("#utilities option:selected").each(function(){
+          var selectedUtil = this;
+          $('#matches option:selected').each(function(){
+            var temp = utilities[this.value].utilities;
+            for(var i in temp){
+              if(temp[i].name == selectedUtil.textContent){
+                // replace {query} with searched text
+                var open = temp[i].url.replace('{query}', this.textContent);
+                global.gui.Shell.openExternal(open);
+                window.close();
+                open = null;
+              }
+            }
+          });
+        });
+      });
+      $('#cancel').click(function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        window.close();
+      })
+    </script>
   </body>
 </html>
