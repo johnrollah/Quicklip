@@ -3,7 +3,9 @@
   <head>
     <meta charset="utf-8">
     <title>QuicKlip2 - Preferences</title>
-    <link rel="stylesheet" href="./bootstrap.css">
+    <link rel="stylesheet" href="./css/bootstrap.css">
+    <link rel="stylesheet" href="./css/bootstrap-select.css">
+    <link rel="stylesheet" href="./css/font-awesome.min.css">
     <style media="screen">
       body{
         background-color: black;
@@ -39,6 +41,22 @@
       .dark .modal-content div{
         background-color: black;
       }
+      .bootstrap-select{
+        color: black;
+      }
+      .newUtil {
+        cursor: pointer;
+      }
+      .newUtil[disabled] {
+        cursor: not-allowed;
+      }
+      option[selected] {
+        background-color: black;
+        color: white;
+      }
+      .addon {
+
+      }
     </style>
   </head>
   <body>
@@ -54,7 +72,6 @@
           <li role="presentation"><a href="#utilities" aria-controls="utilities" role="tab" data-toggle="tab">Utilities</a></li>
           <li role="presentation"><a href="#style" aria-controls="style" role="tab" data-toggle="tab">Style</a></li>
         </ul>
-
         <br>
         <div class="tab-content">
           <div class="tab-pane active" id="clips">
@@ -82,38 +99,56 @@
             </div>
             <div class="col-xs-6">
               <label for="example">Text Box Preview:</label>
-              <textarea name="example" class="clip">Bacon ipsum dolor amet doner andouille alcatra venison meatloaf. Jowl ball tip chicken pork belly spare ribs beef ham. Ball tip rump swine leberkas, pork belly doner pork chop bresaola shanke.</textarea>
+              <textarea name="example" class="clip">
+Bacon ipsum dolor amet doner andouille alcatra venison meatloaf. Jowl ball tip chicken pork belly spare ribs beef ham. Ball tip rump swine leberkas, pork belly doner pork chop bresaola shanke.
+              </textarea>
             </div>
           </div>
 
-
           <div class="tab-pane" id="utilities">
+            <div class="input-group">
+              <div class="input-group-addon">
+                <input type="checkbox" name="autoscan" id="autoscan">
+              </div>
+              <input class="form-control" disabled type="text" value="Automatically scan new copies?" style="cursor: default;">
+            </div>
+
+            <hr>
             <div class="col-xs-4">
-              <input type="checkbox" name="autoscan" id="autoscan">Automatically scan new copies?
-              <hr>
-              <label for="searchItems">String Searches</label>
-              <select class="form-control" name="searchItems" id="searchItems" size="9">
+              <label for="searchItems">String Search Items</label>
+              <select class="bootstrap-select" name="searchItems" id="searchItems" size="9">
                 <!-- items added on load -->
               </select>
               <br>
               <input class="btn btn-warning" type="button" name="createNew" id="createNew" value="Create New">
+              <input class="btn btn-danger" type="button" name="delete" id="deleteItem" value="Delete" disabled>
             </div>
             <div class="col-xs-8">
               <form class="form-horizontal">
                 <div class="form-group">
                   <label for="expression">Regular Expression</label>
-                  <input class="form-control" disabled type="text" name="expression" id="expression">
+                  <div class="input-group">
+                    <input class="form-control" disabled type="text" name="expression" id="expression">
+                    <span class="input-group-addon btn-primary" id="saveRegex" disabled><i class="fa fa-trash"></i></span>
+                  </div>
                 </div>
                 <div class="form-group">
                   <label for="itemUtilities">Utilities</label>
-                  <select class="form-control" disabled name="itemUtilities" id="itemUtilities">
-                    <option value="">Select Utility</option>
-                    <!-- items added when item is selected -->
-                  </select>
+                  <div class="input-group">
+                    <select class="form-control" disabled name="itemUtilities" id="itemUtilities">
+                      <option value="">Select Utility</option>
+                      <!-- items added when item is selected -->
+                    </select>
+                    <span class="input-group-addon btn-danger" id="delUtil" disabled><i class="fa fa-trash"></i></span>
+                    <span class="input-group-addon btn-warning" id="newUtil" disabled><i class="fa fa-plus"></i></span>
+                  </div>
                 </div>
                 <div class="form-group">
                   <label for="utilityURL">Utility url</label>
-                  <input class="form-control" disabled type="text" name="utilityURL" id="utilityURL">
+                  <div class="input-group">
+                    <input class="form-control" disabled type="text" name="utilityURL" id="utilityURL">
+                    <span class="input-group-addon btn-primary" id="saveUrl" disabled><i class="fa fa-floppy-o"></i></span>
+                  </div>
                 </div>
               </form>
             </div>
@@ -132,124 +167,9 @@
         </div>
       </div>
     </div>
-    <script src="./jquery.js"></script>
-    <script src="./bootstrap.js"></script>
-    <script src="./bootbox.min.js"></script>
-    <script type="text/javascript">
-      var utilities = global.tempUtils;
-      var util = null; // to be used later when modifying utils
-      global.tempUtils = null;
-      // disable default form submits
-      $('form').keypress(function(e){
-        if(e.keyCode == 13) e.preventDefault();
-      });
-      // enable tabs
-      $('.nav-tabs a').click(function (e) {
-        e.preventDefault();
-        $(this).tab('show');
-      });
-
-      // utility tab code
-      // set checkbox value for autoscan
-      $('#autoscan').prop('checked', global.preferences.dynamicsearch.autoscan);
-
-      for(var i in utilities){
-        var temp = utilities[i];
-        $('#searchItems')
-          .append('<option value="'+i+'">'+temp.name+'</option>');
-      }
-
-      $('#searchItems').change(function(e){
-        if(this.selectedOptions.length < 1){
-          $('#expression').val('');
-          $('#itemUtilities').html('<option value="">Select Utility</option>');
-          $('#utilityURL').val('');
-        }else{
-          util = utilities[this.selectedOptions[0].value];
-          $('#expression').val(util.regex).prop('disabled', false);
-          for(var i in util.utilities){
-            var temp = util.utilities[i];
-            $('#itemUtilities')
-              .append('<option value="'+i+'">'+temp.name+'</option>');
-          }
-          $('#itemUtilities').prop('disabled',false);
-        }
-      });
-
-      $('#createNew').click(function(e){
-        e.preventDefault();
-        bootbox.prompt({
-          title: 'New Search Item',
-          message: "Name your new search item",
-          className: 'dark',
-          callback: function(result){
-            if(!result) return; // dialog dismissed
-            console.log(result);
-          }
-        });
-      })
-
-      // clips tab code
-      applyPreferences(); // apply current prefs to textarea preview
-      // apply on focus methods for textarea preview
-      $('.clip').focusin(function(){
-        if(this.clientHeight < this.scrollHeight){
-          this.style.height = this.scrollHeight + 'px';
-          if(this.clientHeight < this.scrollHeight){
-            this.style.height = (this.scrollHeight * 2) - this.clientHeight + 'px';
-          }
-        }
-      }).focusout(function(){
-        this.style.height = global.preferences.textarea.height+'px';
-      });
-
-      $('#textarea-fontsize').on('keyup',function(e){
-        $('.clip').css('font-size',this.value + 'px');
-      });
-      $('#textarea-height').on('keyup',function(e){
-        $('.clip').css('height',this.value + 'px');
-      })
-
-
-      // cancel prefs window
-      $('#cancel').click(function(e){
-        e.preventDefault();
-        e.stopPropagation();
-        window.close();
-      });
-      // save changed preferences
-      $('#save').click(function(e){
-        e.preventDefault();
-        e.stopPropagation();
-        var preferences = {};
-        preferences.window = global.preferences.window;
-        preferences.dynamicsearch = global.preferences.dynamicsearch;
-        preferences.dynamicsearch.autoscan = $('#autoscan').prop('checked');
-        preferences.max_clips = $('#clipcount').val();
-        preferences.textarea = {
-          height: $('#textarea-height').val(),
-          fontsize: $('#textarea-fontsize').val()
-        };
-
-        // write preferences to file
-        require('fs').writeFile(global.root+'/preferences.json', JSON.stringify(preferences), function(err){
-          if(err)console.error(err);
-          window.opener.postMessage({ type:'prefs', value:preferences },'*');
-          window.close();
-        });
-      });
-      $('#clipcount').val(global.preferences.max_clips);
-      $('#textarea-fontsize').val(global.preferences.textarea.fontsize);
-      $('#textarea-height').val(global.preferences.textarea.height);
-
-      function applyPreferences(){
-        $('.clip').each(function(){
-          $(this).css({
-            'height': global.preferences.textarea.height,
-            'font-size': global.preferences.textarea.fontsize + 'px'
-          });
-        });
-      }
-    </script>
+    <script src="./js/jquery.js"></script>
+    <script src="./js/bootstrap.js"></script>
+    <script src="./js/bootbox.min.js"></script>
+    <script src="./js/options.js"></script>
   </body>
 </html>
