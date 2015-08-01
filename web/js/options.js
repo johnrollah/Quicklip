@@ -93,8 +93,7 @@ $('#deleteItem').click(function(e){
     className: "dark",
     callback: function(result){
       if(result){
-        global.dynSearch.delete(utilName);
-        global.dynSearch.save();
+        global.dynSearch.deleteItem(index);
         reloadItems();
         resetForm();
       }
