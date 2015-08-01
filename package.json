@@ -1,15 +1,16 @@
 {
-  "name"    : "QuicKlip 2",
-  "version" : "0.0.1",
-  "main"    : "index.html",
-  "window"  : {
-    "title" : "QuicKlip2",
-    "icon"  : "icon.png",
-    "frame" : false,
-    "toolbar" : false,
-    "show_in_taskbar" : false,
+  "name": "QuicKlip",
+  "version": "0.0.1",
+  "main": "index.html",
+  "window": {
+    "title": "QuicKlip",
+    "icon": "icon.png",
+    "frame": false,
+    "toolbar": false,
+    "show_in_taskbar": false,
     "min_width": 100,
     "min_height": 50,
-    "as_desktop": true
+    "as_desktop": true,
+    "single-instance": true
   }
 }

@@ -55,9 +55,7 @@ $('#createNew').click(function(e){
         });
         $(bb2).keypress(function(e){
           if(e.keyCode==13){
-            e.preventDefault();
-            e.stopPropagation();
-            $('.modal-footer .btn-primary').click();
+            bootbox.alert.hideAll();
           }
         });
         return;
@@ -84,7 +82,7 @@ $('#createNew').click(function(e){
 
 $('#deleteItem').click(function(e){
   if($(this).attr('disabled'))return;
-  var index = $('#searchItems :selected').val();
+  var index = $('#searchItems option:selected').val();
   var utilName = utilities[index].name;
   e.preventDefault();
   bootbox.confirm({
@@ -124,10 +122,8 @@ $('#saveRegex').click(function(e){
 });
 
 $('#itemUtilities').change(function(e){
-  //if(!$(this).val())return;
-  console.log($(this).val());
   e.preventDefault();
-  var index = $('#searchItems :selected').val();
+  var index = $('#searchItems option:selected').val();
   var uIndex = $(this).val();
   if(uIndex==''){
     $('#utilityURL').val('').attr('disabled',true);
@@ -140,7 +136,7 @@ $('#itemUtilities').change(function(e){
 
 $('#delUtil').click(function(e){
   e.preventDefault();
-  var name = $('#utilities :selected').text();
+  var name = $('#utilities option:selected').text();
   var bb = bootbox.confirm({
     title: 'Really delete "'+name+'"?',
     message: 'Are you sure you want to delete the "'+name+'" utility?',
@@ -148,8 +144,8 @@ $('#delUtil').click(function(e){
     callback: function(result){
       if(!result) return; // dismissed
       $('#utilityURL').val('').attr('disabled',true);
-      var iIndex = $('#searchItems :selected').val();
-      var uIndex = $('#utilities :selected').val();
+      var iIndex = $('#searchItems option:selected').val();
+      var uIndex = $('#utilities option:selected').val();
       global.dynSearch.deleteUtility(iIndex,uIndex);
       reloadUtilities(iIndex);
     }
@@ -223,8 +219,8 @@ $('#saveUrl').click(function(e){
     });
     return;
   }
-  var iIndex = $('#searchItems :selected').val();
-  var uIndex = $('#itemUtilities :selected').val();
+  var iIndex = $('#searchItems option:selected').val();
+  var uIndex = $('#itemUtilities option:selected').val();
   global.dynSearch.updateUtilityUrl(iIndex,uIndex,url);
   $(this).attr('disabled',true);
   iIndex = uIndex = null;
@@ -379,4 +375,8 @@ function enableForm(regex,utilities){
 
   // buttons
   $('#newUtil').attr('disabled',false);
+}
+
+function rxl(){
+  require('nw.gui').Shell.openExternal('http://regexlib.com')
 }
