@@ -249,6 +249,47 @@ $('#textarea-height').on('keyup',function(e){
   $('.clip').css('height',this.value + 'px');
 })
 
+// style tab coe
+// initialize
+$('#customCSS').text(global.preferences.window.customCSS);
+if(global.preferences.window.useCustomCSS){
+  $('#useCustomCSS').attr('checked',true);
+}
+
+$('#useCustomCSS').change(function(e){
+  var bool = $(this).prop('checked');
+  global.preferences.window.useCustomCSS = bool;
+  window.opener.postMessage({type: 'CSS', value: bool},'*');
+  if(bool){
+    $('#customCSS').prop('disabled',false);
+  }else{
+    $('#customCSS').prop('disabled',true);
+  }
+
+});
+
+var typing = null;
+$('#customCSS').keydown(postCSS);
+
+
+$('#customCSS').text(global.preferences.window.customCSS);
+var editor = ace.edit('customCSS');
+editor.setTheme('ace/theme/monokai');
+editor.getSession().setMode('ace/mode/css');
+
+$('#saveCSS').click(function(e){
+  $(this).attr('disabled',true);
+  $('#cancelCSS').attr('disabled',true);
+  postCSS();
+});
+
+$('#cancelCSS').click(function(e){
+  $(this).attr('disabled',true);
+  $('#customCSS').val(global.preferences.window.customCSS);
+});
+
+// stats tab code
+setInterval(refreshStats,500);
 
 // cancel prefs window
 $('#cancel').click(function(e){
@@ -375,6 +416,23 @@ function enableForm(regex,utilities){
 
   // buttons
   $('#newUtil').attr('disabled',false);
+}
+function refreshStats(){
+  var stats = global.preferences.stats;
+  $('#totalCopies').text(stats.copies);
+  $('#totalLaunchedUtils').text(stats.utilitiesLaunched);
+  $('#totalCharactersCopied').text(stats.charactersCopied);
+  $('#totalLaunchedItems').text(stats.launchedItems);
+  $('#totalHistoryCopies').text(stats.historyCopy);
+}
+function postCSS(){
+  typing = null;
+  typing = setTimeout(function(){
+    typing = null;
+    global.preferences.window.customCSS = editor.getValue();
+    global.preferences.io.save();
+    window.opener.postMessage({type: 'CSS', value: true}, '*');
+  },1000);
 }
 
 function rxl(){

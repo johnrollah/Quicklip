@@ -54,8 +54,19 @@
         background-color: black;
         color: white;
       }
-      .addon {
 
+      #customCSS {
+        height: 250px;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+      #footerButtons{
+        position: absolute;
+        bottom: 0;
+        left:0;
+        right:0;
       }
     </style>
   </head>
@@ -71,6 +82,7 @@
           <li role="presentation" class="active"><a href="#clips" aria-controls="clips" role="tab" data-toggle="tab">Clips</a></li>
           <li role="presentation"><a href="#utilities" aria-controls="utilities" role="tab" data-toggle="tab">Utilities</a></li>
           <li role="presentation"><a href="#style" aria-controls="style" role="tab" data-toggle="tab">Style</a></li>
+          <li role="presentation"><a href="#stats" aria-controls="stats" role="tab" data-toggle="tab">Statistics</a></li>
         </ul>
         <br>
         <div class="tab-content">
@@ -156,12 +168,48 @@ Bacon ipsum dolor amet doner andouille alcatra venison meatloaf. Jowl ball tip c
 
           </div>
           <div class="tab-pane" id="style">
-            <h1>Coming Soon...</h1>
+            <div class="row">
+              <div class="input-group">
+                <div class="input-group-addon">
+                  <input type="checkbox" name="useCustomCSS" id="useCustomCSS">
+                </div>
+                <input class="form-control" disabled type="text" value="Use custom CSS?" style="cursor: default;">
+              </div>
+            </div>
+            <hr>
+            <div class="row" style="height:calc(100vh - 20%)">
+              <div name="customCSS" class="form-control" id="customCSS"></div>
+            </div>
+          </div>
+          <div class="tab-pane" id="stats">
+            <table class="table">
+              <tr>
+                <td class="text-center" colspan="2">
+                  <h3><span id="totalCopies"></span> total copies</h3>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <h4><span id="totalLaunchedUtils"></span> total launched utilities</h4>
+                </td>
+                <td>
+                  <h4><span id="totalCharactersCopied"></span> characters copied</h4>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <h4><span id="totalLaunchedItems"></span> launched search items</h4>
+                </td>
+                <td>
+                  <h4><span id="totalHistoryCopies"></span> history clips copied</h4>
+                </td>
+              </tr>
+            </table>
           </div>
         </div>
       </div>
       <div class="row">
-        <div class="col-sm-12 text-center">
+        <div class="col-sm-12 text-center" id="footerButtons">
           <hr>
           <button class="btn btn-primary" id="save" type="button" name="button">Save</button>
           <button class="btn btn-danger" id="cancel" type="button" name="button">Cancel</button>
@@ -171,6 +219,7 @@ Bacon ipsum dolor amet doner andouille alcatra venison meatloaf. Jowl ball tip c
     <script src="./js/jquery.js"></script>
     <script src="./js/bootstrap.js"></script>
     <script src="./js/bootbox.min.js"></script>
+    <script src="./js/ace/ace.js"></script>
     <script src="./js/options.js"></script>
   </body>
 </html>

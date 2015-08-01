@@ -1,7 +1,7 @@
 var utilities = global.utilities;
 var selected = [];
 global.utilities = null;
-
+global.dynSearch.resetMatched();
 // build the tools options upon load of the page
 $(function(){
   for(var i in utilities){
@@ -39,12 +39,14 @@ $('#run').click(function(e){
   e.stopPropagation();
   $("#utilities option:selected").each(function(){
     var selectedUtil = this;
+    global.preferences.stats.launchedItems++;
     $('#matches option:selected').each(function(){
       var temp = utilities[this.value].utilities;
       for(var i in temp){
         if(temp[i].name == selectedUtil.textContent){
           // replace {query} with searched text
           var open = temp[i].url.replace('{query}', this.textContent);
+          global.preferences.stats.utilitiesLaunched++;
           global.gui.Shell.openExternal(open);
           window.close();
           open = null;
