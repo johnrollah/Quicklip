@@ -64,7 +64,7 @@
       }
       #footerButtons{
         position: absolute;
-        bottom: 0;
+        bottom: -10;
         left:0;
         right:0;
       }
@@ -118,54 +118,66 @@ Bacon ipsum dolor amet doner andouille alcatra venison meatloaf. Jowl ball tip c
           </div>
 
           <div class="tab-pane" id="utilities">
-            <div class="input-group">
-              <div class="input-group-addon">
-                <input type="checkbox" name="autoscan" id="autoscan">
+            <div class="col-xs-6">
+              <div class="input-group">
+                <div class="input-group-addon">
+                  <input type="checkbox" name="autoscan" id="autoscan">
+                </div>
+                <input class="form-control" disabled type="text" value="Automatically scan new copies?" style="cursor: default;">
               </div>
-              <input class="form-control" disabled type="text" value="Automatically scan new copies?" style="cursor: default;">
+            </div>
+            <div class="col-xs-6 pull-right">
+              <h5>TIP: right click a clip number to scan for items!</h5>
             </div>
 
-            <hr>
-            <div class="col-xs-4">
-              <label for="searchItems">String Search Items</label>
-              <select class="bootstrap-select" name="searchItems" id="searchItems" size="9">
-                <!-- items added on load -->
-              </select>
-              <br>
-              <input class="btn btn-warning" type="button" name="createNew" id="createNew" value="Create New">
-              <input class="btn btn-danger" type="button" name="delete" id="deleteItem" value="Delete" disabled>
+            <div class="container-fluid">
+              <div class="row">
+                <hr>
+              </div>
+              <div class="row">
+                <div class="col-xs-4">
+                  <label for="searchItems">String Search Items</label>
+                  <select class="bootstrap-select" name="searchItems" id="searchItems" size="9">
+                    <!-- items added on load -->
+                  </select>
+                  <br>
+                  <button class="btn btn-warning" type="button" name="createNew" id="createNew" value="Create New"><i class="fa fa-plus"></i></button>
+                  <button class="btn btn-danger" type="button" name="delete" id="deleteItem" value="Delete" disabled><i class="fa fa-trash"></i></button>
+                  <button class="btn btn-info pull-right" type="button" name="rename" id="renameItem" value="Rename" disabled><i class="fa fa-pencil-square-o"></i></button>
+                </div>
+                <div class="col-xs-8">
+                  <form class="form-horizontal">
+                    <div class="form-group">
+                      <label for="expression">Regular Expression</label>
+                      <span class="pull-right">Need help? <a href="javascript:void(0);" onclick="rxl()">regexlib.com</a></span>
+                      <div class="input-group">
+                        <input class="form-control" disabled type="text" name="expression" id="expression">
+                        <span class="input-group-addon btn-primary" id="saveRegex" disabled><i class="fa fa-floppy-o"></i></span>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="itemUtilities">Utilities</label>
+                      <div class="input-group">
+                        <select class="form-control" disabled name="itemUtilities" id="itemUtilities">
+                          <option value="">Select Utility</option>
+                          <!-- items added when item is selected -->
+                        </select>
+                        <span class="input-group-addon btn-info" id="renameUtil" disabled><i class="fa fa-pencil-square-o"></i></span>
+                        <span class="input-group-addon btn-danger" id="delUtil" disabled><i class="fa fa-trash"></i></span>
+                        <span class="input-group-addon btn-warning" id="newUtil" disabled><i class="fa fa-plus"></i></span>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="utilityURL">Utility url</label>
+                      <div class="input-group">
+                        <input class="form-control" disabled type="text" name="utilityURL" id="utilityURL">
+                        <span class="input-group-addon btn-primary" id="saveUrl" disabled><i class="fa fa-floppy-o"></i></span>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
             </div>
-            <div class="col-xs-8">
-              <form class="form-horizontal">
-                <div class="form-group">
-                  <label for="expression">Regular Expression</label>
-                  <a class="pull-right" href="javascript:void(0);" onclick="rxl()">regexlib</a>
-                  <div class="input-group">
-                    <input class="form-control" disabled type="text" name="expression" id="expression">
-                    <span class="input-group-addon btn-primary" id="saveRegex" disabled><i class="fa fa-floppy-o"></i></span>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="itemUtilities">Utilities</label>
-                  <div class="input-group">
-                    <select class="form-control" disabled name="itemUtilities" id="itemUtilities">
-                      <option value="">Select Utility</option>
-                      <!-- items added when item is selected -->
-                    </select>
-                    <span class="input-group-addon btn-danger" id="delUtil" disabled><i class="fa fa-trash"></i></span>
-                    <span class="input-group-addon btn-warning" id="newUtil" disabled><i class="fa fa-plus"></i></span>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="utilityURL">Utility url</label>
-                  <div class="input-group">
-                    <input class="form-control" disabled type="text" name="utilityURL" id="utilityURL">
-                    <span class="input-group-addon btn-primary" id="saveUrl" disabled><i class="fa fa-floppy-o"></i></span>
-                  </div>
-                </div>
-              </form>
-            </div>
-
           </div>
           <div class="tab-pane" id="style">
             <div class="row">
@@ -213,6 +225,7 @@ Bacon ipsum dolor amet doner andouille alcatra venison meatloaf. Jowl ball tip c
           <hr>
           <button class="btn btn-primary" id="save" type="button" name="button">Save</button>
           <button class="btn btn-danger" id="cancel" type="button" name="button">Cancel</button>
+          <br>
         </div>
       </div>
     </div>

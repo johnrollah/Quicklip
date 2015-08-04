@@ -21,7 +21,7 @@ reloadItems();
 
 $('#searchItems').click(function(e){
   if(!this.selectedOptions.length){
-    console.log('empty search items');
+
     $('#expression').val('');
   }else{
     var iIndex = this.selectedOptions[0].value;
@@ -41,13 +41,8 @@ $('#createNew').click(function(e){
     className: 'dark',
     callback: function(result){
       if(!result) return; // dialog dismissed
-      var used = false;
-      for(var i in global.dynSearch.utils){
-        if(global.dynSearch.utils[i].name == result)
-        used = true;
-        break;
-      }
-      if(used){
+
+      if(!global.dynSearch.createNew(result)){
         var bb2 = bootbox.alert({
           title: 'Sorry!',
           message: 'A search item by that name already exists!',
@@ -60,14 +55,11 @@ $('#createNew').click(function(e){
         });
         return;
       }
-
-      global.dynSearch.createNew(result);
-      global.dynSearch.save();
-      reloadItems(true);
-      var len = global.dynSearch.utils.length;
+      var index = global.dynSearch.utils.length - 1;
+      $("#searchItems").append('<option value="'+index+'" selected>'+result+'</option>');
       enableForm(
-        global.dynSearch.utils[len - 1].regex,
-        global.dynSearch.utils[len - 1].utilities
+        global.dynSearch.utils[index].regex,
+        global.dynSearch.utils[index].utilities
       );
       len = null;
     }
@@ -99,11 +91,36 @@ $('#deleteItem').click(function(e){
   })
 });
 
+$('#renameItem').click(function(e){
+  e.preventDefault();
+  if($(this).attr('disabled')) return;
+  var iIndex = $('#searchItems option:selected').val();
+  bootbox.prompt({
+    title: 'Rename Search Item',
+    message: 'Please provide a new name for your search item',
+    className: 'dark',
+    value: $('#searchItems option:selected').text(),
+    callback: function(result){
+      if(!result) return; // dismissed
+      if(!global.dynSearch.renameItem(iIndex,result)){
+        bootbox.alert({
+          title: 'Unable to rename item',
+          message: 'A search item by that name already exists!',
+          className: 'dark'
+        });
+      }else{
+        bootbox.hideAll();
+        $('#searchItems option:selected').text = result;
+      }
+    }
+  });
+});
+
 $('#expression').on('keyup',function(e){
   try{
     var testRegex = new RegExp($(this).val());
     // will only reach next line if valid regex
-    console.log(testRegex);
+
     $(this).css('border-color','green');
     $('#saveRegex').attr('disabled',false);
   }catch(e){
@@ -128,15 +145,43 @@ $('#itemUtilities').change(function(e){
   if(uIndex==''){
     $('#utilityURL').val('').attr('disabled',true);
     $('#delUtil').attr('disabled',true);
+    $('#renameUtil').attr('disabled',true);
     return;
   }
   var url = global.dynSearch.utils[index].utilities[uIndex].url;
   selectUtility(url);
 });
 
+$('#renameUtil').click(function(e){
+  e.preventDefault();
+  if($(this).attr('disabled')) return;
+  var iIndex = $('#searchItems option:selected').val();
+  var uIndex = $('#itemUtilities option:selected').val();
+  bootbox.prompt({
+    title: 'Rename Utility',
+    message: 'Please provide a new name for this utility',
+    className: 'dark',
+    value: $('#itemUtilities option:selected').text(),
+    callback: function(result){
+      if(!result) return; // dismissed
+      if(!global.dynSearch.renameUtility(iIndex,uIndex,result)){
+        bootbox.alert({
+          title: 'Unable to rename utility',
+          message: 'A utility by that name already exists for this search item',
+          className: 'dark'
+        });
+      }else{
+        $('#itemUtilities option:selected').text(result);
+        bootbox.hideAll();
+      }
+    }
+  })
+})
+
 $('#delUtil').click(function(e){
   e.preventDefault();
-  var name = $('#utilities option:selected').text();
+  if($(this).attr('disabled')) return;
+  var name = $('#itemUtilities option:selected').text();
   var bb = bootbox.confirm({
     title: 'Really delete "'+name+'"?',
     message: 'Are you sure you want to delete the "'+name+'" utility?',
@@ -145,9 +190,9 @@ $('#delUtil').click(function(e){
       if(!result) return; // dismissed
       $('#utilityURL').val('').attr('disabled',true);
       var iIndex = $('#searchItems option:selected').val();
-      var uIndex = $('#utilities option:selected').val();
+      var uIndex = $('#itemUtilities option:selected').val();
       global.dynSearch.deleteUtility(iIndex,uIndex);
-      reloadUtilities(iIndex);
+      reloadUtilities(iIndex,false);
     }
   });
 });
@@ -228,6 +273,9 @@ $('#saveUrl').click(function(e){
 
 
 // clips tab code
+$('#clipcount').val(global.preferences.max_clips);
+$('#textarea-fontsize').val(global.preferences.textarea.fontsize);
+$('#textarea-height').val(global.preferences.textarea.height);
 // apply on focus methods for textarea preview
 $('.clip')
   .focusin(function(){
@@ -301,9 +349,8 @@ $('#cancel').click(function(e){
 $('#save').click(function(e){
   e.preventDefault();
   e.stopPropagation();
-  var preferences = {};
-  preferences.window = global.preferences.window;
-  preferences.dynamicsearch = global.preferences.dynamicsearch;
+  var preferences = global.preferences;
+  delete preferences.crud;
   preferences.dynamicsearch.autoscan = $('#autoscan').prop('checked');
   preferences.max_clips = $('#clipcount').val();
   preferences.textarea = {
@@ -312,15 +359,12 @@ $('#save').click(function(e){
   };
 
   // write preferences to file
-  require('fs').writeFile(global.root+'/preferences.json', JSON.stringify(preferences), function(err){
+  require('fs').writeFile(global.root+'/preferences.json', JSON.stringify(preferences,null,2), function(err){
     if(err)console.error(err);
     window.opener.postMessage({ type:'prefs', value:preferences },'*');
     window.close();
   });
 });
-$('#clipcount').val(global.preferences.max_clips);
-$('#textarea-fontsize').val(global.preferences.textarea.fontsize);
-$('#textarea-height').val(global.preferences.textarea.height);
 
 function applyPreferences(){
   $('.clip').each(function(){
@@ -338,21 +382,27 @@ function reloadItems(focusLast) {
     var temp = utilities[i];
 
     $('#searchItems')
-      .append('<option value="'+i+'" '+(focusLast && i== utilities.length ? 'selected':'')+'>'+temp.name+'</option>');
+      .append('<option value="'+i+'" '+((focusLast && i== utilities.length -1) ? 'selected':'')+'>'+temp.name+'</option>');
 
   }
   reloadUtilities();
 }
 
 function reloadUtilities(itemIndex, selectLast){
-  if(itemIndex === undefined) return;
+  if(itemIndex === undefined){
+    $('#itemUtilities').attr('disabled',true)
+                       .html('<option value="" selected>Select Utility</option>');
+    $('#utilityURL').attr('disabled',true);
+    return;
+  }
   $('#itemUtilities').attr('disabled',false);
   $('#itemUtilities')
     .html('<option value="" '+(selectLast ? '':'selected')+'>Select Utility</option>');
+  var utilities = global.dynSearch.utils[itemIndex].utilities;
   for(var i in global.dynSearch.utils[itemIndex].utilities){
     var temp = global.dynSearch.utils[itemIndex].utilities[i];
     $('#itemUtilities')
-      .append('<option value="'+i+'">'+temp.name+'</option>');
+      .append('<option value="'+i+'" '+(selectLast && i == utilities.length - 1 ? 'selected':'')+'>'+temp.name+'</option>');
   }
 
   $('#utilityURL').val('');
@@ -375,6 +425,7 @@ function selectUtility(url){
       }
     });
   }else{
+    $('#renameUtil').attr('disabled',false);
     $('#delUtil').attr('disabled',false);
     $('#utilityURL').val(url);
     $('#utilityURL').prop('disabled',false);
@@ -394,6 +445,7 @@ function resetForm(){
 
   // buttons
   $('#saveRegex').attr('disabled',true);
+  $('#renameUtil').attr('disabled',true);
   $('#delUtil').attr('disabled',true);
   $('#newUtil').attr('disabled',true);
   $('#saveUrl').attr('disabled',true);
@@ -412,6 +464,7 @@ function enableForm(regex,utilities){
 
   // text fields and selects
   $('#deleteItem').prop('disabled',false);
+  $('#renameItem').prop('disabled',false);
   reloadUtilities();
 
   // buttons
@@ -430,7 +483,7 @@ function postCSS(){
   typing = setTimeout(function(){
     typing = null;
     global.preferences.window.customCSS = editor.getValue();
-    global.preferences.io.save();
+    global.preferences.crud.save();
     window.opener.postMessage({type: 'CSS', value: true}, '*');
   },1000);
 }

@@ -1,9 +1,9 @@
 var utilities = global.utilities;
 var selected = [];
 global.utilities = null;
-global.dynSearch.resetMatched();
 // build the tools options upon load of the page
 $(function(){
+  setTimeout(function(){global.dynSearch.resetMatched()},1000);
   for(var i in utilities){
     var util = utilities[i];
     for(var x in util.match){
