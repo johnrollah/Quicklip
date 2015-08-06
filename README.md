@@ -8,7 +8,7 @@ A clipboard manager inspired by call-center related work.
 - Customize font-size and text box height.
 
 # How to Use the the current build
-Node-webkit is bundedl with the application for development purposes. Read more about this here: https://github.com/nwjs/nw.js/
+Node-webkit is bundled with the application for development purposes. Read more about this here: https://github.com/nwjs/nw.js/
 
 ##Windows:
 - Simply run the `nw.exe` located in the root of the application.
