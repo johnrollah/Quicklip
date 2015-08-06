@@ -479,6 +479,7 @@ function enableForm(regex,utilities){
 }
 function refreshStats(){
   var stats = global.preferences.stats;
+  $('#averageCharactersCopied').text(Math.floor(stats.charactersCopied / stats.copies));
   $('#totalCopies').text(stats.copies);
   $('#totalLaunchedUtils').text(stats.utilitiesLaunched);
   $('#totalCharactersCopied').text(stats.charactersCopied);
