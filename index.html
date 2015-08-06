@@ -62,14 +62,31 @@
       margin-bottom: 3px;
       -webkit-app-region: drag;
     }
+
+    .minimizer {
+      z-index: 1000;
+      color: grey;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 15px;
+      display: block;
+      background-color: rgba(5,5,5,0.2);
+      font-size: xx-small;
+      text-align: center;
+      margin-top: 3px;
+    }
     .wrapper {
       z-index: 1;
       position: fixed;
       top: 15px;
       left: 0;
+      right: 0;
+      bottom: -15px;
       overflow: scroll;
       width: 100%;
-      height: calc(100% - 15px);
+      height: calc(100% - 30px);
     }
     #clip-area {
       position: absolute;
@@ -86,6 +103,9 @@
       <div id="clip-area">
         <!-- elements are added automatically -->
       </div>
+    </div>
+    <div class="minimizer" id="minimizer">
+      double click minimize
     </div>
   </body>
   <script src="./web/js/jquery.js"></script>

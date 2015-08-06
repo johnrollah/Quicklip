@@ -9,7 +9,7 @@
     "toolbar": false,
     "show_in_taskbar": false,
     "min_width": 100,
-    "min_height": 50,
+    "min_height": 30,
     "as_desktop": true,
     "single-instance": true
   }
