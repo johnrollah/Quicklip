@@ -277,6 +277,10 @@ $('#clipcount').val(global.preferences.max_clips)
                .change(function(e){
                  if($(this).val() < 10)$(this).val(10);
                });
+$('#useHotkeys').change(function(e){
+  console.log($(this).prop('checked'))
+  global.preferences.useHotkeys = $(this).prop('checked');
+});
 $('#textarea-fontsize').val(global.preferences.textarea.fontsize);
 $('#textarea-height').val(global.preferences.textarea.height);
 // apply on focus methods for textarea preview
