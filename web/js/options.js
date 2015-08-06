@@ -273,7 +273,10 @@ $('#saveUrl').click(function(e){
 
 
 // clips tab code
-$('#clipcount').val(global.preferences.max_clips);
+$('#clipcount').val(global.preferences.max_clips)
+               .change(function(e){
+                 if($(this).val() < 10)$(this).val(10);
+               });
 $('#textarea-fontsize').val(global.preferences.textarea.fontsize);
 $('#textarea-height').val(global.preferences.textarea.height);
 // apply on focus methods for textarea preview
