@@ -34,12 +34,21 @@
       box-sizing: border-box;
       background-color: rgba(92, 92, 92, 0.6);
       color: white;
-      width: 89%;
+      width: 79%;
       resize: vertical;
       height: 27px;
       word-break: break-all;
       overflow: hidden;
       -webkit-app-region: no-drag;
+    }
+    .clip-group .lock {
+      float: right;
+      width: 10%;
+      height: 27px
+    }
+    .lock .form-control{
+      margin-top:0px;
+      height:27px;
     }
     ::selection {
       background: black; /* WebKit/Blink Browsers */
@@ -66,6 +75,7 @@
     .minimizer {
       z-index: 1000;
       color: grey;
+      cursor: default;
       position: fixed;
       left: 0;
       right: 0;
@@ -76,6 +86,8 @@
       font-size: xx-small;
       text-align: center;
       margin-top: 3px;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
     }
     .wrapper {
       z-index: 1;
@@ -88,6 +100,7 @@
       width: 100%;
       height: calc(100% - 30px);
     }
+
     #clip-area {
       position: absolute;
       left: 0;
