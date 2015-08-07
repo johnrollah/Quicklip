@@ -285,7 +285,8 @@ $('#import').change(function(e){
       });
     }else{
       reloadItems();
-      this.value = ''
+      this.value = '';
+      global.dynsearch.save();
     }
   }
 });
