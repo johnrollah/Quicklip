@@ -3,6 +3,8 @@ var prevUrl = prevRegex= '';
 var urlRegex = /^(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z(x|0|1){00a1}\-(x|0|1){ffff}0-9]+-?)*[a-z(x|0|1){00a1}\-(x|0|1){ffff}0-9]+)(?:\.(?:[a-z(x|0|1){00a1}\-(x|0|1){ffff}0-9]+-?)*[a-z(x|0|1){00a1}\-(x|0|1){ffff}0-9]+)*(?:\.(?:[a-z(x|0|1){00a1}\-(x|0|1){ffff}]{2,})))(?::\d{2,5})?(?:\/[^\s]*)?$/;
 resetForm();
 applyPreferences(); // apply current prefs to textarea preview
+$('#import').bootstrapFileInput();
+$('#export').attr('href',global.root+'/DynSearch.json');
 // disable default form submits
 $('.form-horizontal').keypress(function(e){
   if(e.keyCode == 13) e.preventDefault();
@@ -272,13 +274,30 @@ $('#saveUrl').click(function(e){
 });
 
 
+$('#import').change(function(e){
+  if(this.value){
+    var result = global.dynSearch.importFile(this.value);
+    if(!result.success){
+      bootbox.alert({
+        title: 'Error importing',
+        message: result.message,
+        className: 'dark'
+      });
+    }else{
+      reloadItems();
+      this.value = '';
+      global.dynsearch.save();
+    }
+  }
+});
+$('#export').attr('href',global.root+'/DynSearch.json');
+
 // clips tab code
 $('#clipcount').val(global.preferences.max_clips)
                .change(function(e){
                  if($(this).val() < 10)$(this).val(10);
                });
 $('#useHotkeys').change(function(e){
-  console.log($(this).prop('checked'))
   global.preferences.useHotkeys = $(this).prop('checked');
 });
 $('#textarea-fontsize').val(global.preferences.textarea.fontsize);
